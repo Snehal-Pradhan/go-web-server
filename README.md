@@ -1,8 +1,10 @@
-<div align="center">
-  <h1>Go Web Server</h1>
+&nbsp;
+  <h1 align="center">Go Web Server</h1>
   <p align="center">
     A RESTful Book API server built with Go, backed by an in-memory database. Create and retrieve books through clean JSON endpoints — demonstrating production-ready patterns for building maintainable HTTP services.
   </p>
+
+  <div align="center">
   <picture>
     <img alt="Go logo" src="public/image.png" width="10%">
   </picture>
