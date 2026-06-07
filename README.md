@@ -1,33 +1,31 @@
-  <h1 align="center">Go Web Server</h1>
+<div align="center">
+  <h1>Go Web Server</h1>
   <p align="center">
     A RESTful Book API server built with Go, backed by an in-memory database. Create and retrieve books through clean JSON endpoints — demonstrating production-ready patterns for building maintainable HTTP services.
   </p>
-
-  <div align="center">
   <picture>
     <img alt="Go logo" src="public/image.png" width="10%">
   </picture>
   <p align="center">
     <a href="#features">Features</a> ·
     <a href="#architecture">Architecture</a> ·
+    <a href="#tech-stack">Tech Stack</a> ·
     <a href="#quick-start">Quick Start</a> ·
-    <a href="#project-structure">Project Structure</a> ·
+    <a href="#project-structure">Structure</a> ·
     <a href="#patterns">Patterns</a>
   </p>
 </div>
 
-&nbsp;
-
-A hands-on exploration of Go web server patterns — layered architecture, custom HTTP handler middleware, typed errors, standardized JSON responses, and dependency injection. Built to learn and demonstrate how to structure a Go HTTP service that scales in complexity without collapsing into spaghetti.
-
 ## Features
 
-- **Layered architecture** — models, services, repositories, and handlers separated by concern
-- **Custom HTTP handler** — a `handlers.Handler` type that lets you write `func(w, r) error` and catches all errors in one place
-- **Standardized JSON responses** — every response uses the same `{success, message, data}` envelope
-- **Typed application errors** — custom `AppError` with `TypeBadRequest` / `TypeNotFound` that maps directly to HTTP status codes
-- **Repository pattern** — data access behind an interface, swappable between in-memory (buntdb) and any other backend
-- **Dependency injection** — repository → service → handler chain wired at startup, no global state
+| Area | |
+|------|--|
+| **Layered architecture** | Models, services, repositories, and handlers separated by concern |
+| **Custom HTTP handler** | `func(w, r) error` — errors caught in one place, not scattered across handlers |
+| **Standardized responses** | Every reply uses the `{success, message, data}` envelope |
+| **Typed errors** | `AppError` maps directly to HTTP 400 / 404 — never hard-code status codes |
+| **Repository pattern** | Data access behind an interface — swap buntdb for MongoDB without touching business logic |
+| **Dependency injection** | Repository → Service → Handler, wired at startup with zero globals |
 
 ## Architecture
 
@@ -64,12 +62,20 @@ Client  ──►  gorilla/mux  ──►  handlers.Handler.ServeHTTP()
                                             └── unknown?   ──► 500
 ```
 
+## Tech Stack
+
+| Technology | Purpose |
+|------------|---------|
+| [Go](https://go.dev/) | Language — stdlib `net/http` for the server |
+| [gorilla/mux](https://github.com/gorilla/mux) | HTTP request router (path variables, method matching) |
+| [buntdb](https://github.com/tidwall/buntdb) | In-memory key-value store (book persistence) |
+
 ## Quick Start
 
 ```bash
 # Clone and run
 git clone <repo-url>
-cd MY_WORK
+cd go-web-server
 go run main.go
 
 # Test the API
@@ -84,7 +90,7 @@ curl -s http://localhost:8080/book/<id-from-response>
 ## Project Structure
 
 ```
-MY_WORK/
+go-web-server/
 ├── main.go                              # Entry point
 ├── go.mod / go.sum
 ├── errors/
@@ -157,6 +163,31 @@ type Repository interface {
 // inmemory.go implements it with buntdb
 // mongo.go would implement it with MongoDB — swap without changing services
 ```
+
+## Detailed Breakdown
+
+### Handler layer — error centralization
+
+Every HTTP handler returns `error`. The custom `handlers.Handler` type (which implements `http.Handler`) catches that error in `ServeHTTP` and routes it through `respondWithErr`. This means zero error-handling boilerplate in your handler functions — you just return an error and it gets formatted as the right JSON response.
+
+### Service layer — business logic
+
+The service is an interface (`book.Service`) with a single implementation. It generates IDs, timestamps, and delegates persistence to the repository. The handler never touches the database — it only calls the service.
+
+### Repository layer — data access
+
+`repository.Repository` is an interface with two methods: `GetBook` and `CreateBook`. The in-memory implementation uses buntdb (a fast embedded key-value store). Books are serialized to JSON and stored under keys like `books::<id>`. Because the service depends on the interface, swapping to PostgreSQL, MongoDB, or a file backend requires zero changes to business logic.
+
+### Error types — semantic HTTP mapping
+
+`AppError` carries a `Type` field (`TypeBadRequest` or `TypeNotFound`). The central `respondWithErr` function uses `errors.As` to unwrap the error, checks its type, and writes the correct HTTP status code. Unknown/unexpected errors always return 500 with a generic message — no information leakage.
+
+### Responses — consistent envelope
+
+Every endpoint writes through `responses.OK()` or `responses.Fail()`. The JSON shape is always `{ "success": bool, "message": string, "data": ... }`. The `ToJSON()` method sets `Content-Type: application/json` and writes the status code in one place — no handler can accidentally omit the header or use a different format.
+
+ 
+
 <div align="center">
   <sub>Built with Go</sub>
 </div>
