@@ -1,17 +1,19 @@
 <div>
   <img alt="Project Status" src="https://img.shields.io/badge/Project%20Status-Completed%20/%20Stable-success">
 </div>
+  <br>
+  <div align="center">
+  <picture>
+    <img alt="Go logo" src="public/image.png" width="10%">
+  </picture>
+  </div>
+
+  <br>
 <h1 align="center">Go Web Server</h1>
 <div align="center">
   <p align="center">
     A RESTful Book API server built with Go, backed by an in-memory database. Create and retrieve books through clean JSON endpoints — demonstrating production-ready patterns for building maintainable HTTP services.
   </p>
-  <br>
-  <picture>
-    <img alt="Go logo" src="public/image.png" width="10%">
-  </picture>
-
-  <br>
   <br>
   
   <p align="center">
