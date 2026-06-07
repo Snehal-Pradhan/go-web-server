@@ -1,3 +1,6 @@
+<div>
+  <img alt="Project Status" src="https://img.shields.io/badge/Project%20Status-Completed%20/%20Stable-success">
+</div>
 <h1 align="center">Go Web Server</h1>
 <div align="center">
   <p align="center">
@@ -15,6 +18,8 @@
     <a href="#patterns">Patterns</a>
   </p>
 </div>
+<br>
+> **Project Status:** 🟢 **Complete & Stable.** All core features and test suites are fully implemented and verified. This repository is in maintenance mode.
 
 ## Features
 
