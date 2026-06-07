@@ -6,9 +6,14 @@
   <p align="center">
     A RESTful Book API server built with Go, backed by an in-memory database. Create and retrieve books through clean JSON endpoints — demonstrating production-ready patterns for building maintainable HTTP services.
   </p>
+  <br>
   <picture>
     <img alt="Go logo" src="public/image.png" width="10%">
   </picture>
+
+  <br>
+  <br>
+  
   <p align="center">
     <a href="#features">Features</a> ·
     <a href="#architecture">Architecture</a> ·
